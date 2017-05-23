@@ -2,6 +2,7 @@
   height: 100vh;
 }
 
-.leaflet-container {
+.leaflet-container,
+.rootWrapper {
   height: 100%;
 }
