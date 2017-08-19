@@ -18,6 +18,7 @@ class Travelmap extends Component {
   getPosts(endpoint) {
     return $.getJSON(endpoint)
             .then((data) => {
+
               data.data.forEach((el, i) => {
                 this.posts.push(el);
               });
