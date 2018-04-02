@@ -19,7 +19,6 @@ class Travelmap extends Component {
       const req = new XMLHttpRequest();
       req.open('GET', endpoint);
       req.onload = () => {
-        console.log(req.status);
         if (req.status === 200) {
           resolve(req.response);
         }
