@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-import $ from 'jquery'; 
 import './travelmap.css';
 import token from './superSecretToken.js';
 
@@ -16,18 +15,34 @@ class Travelmap extends Component {
   }
 
   getPosts(endpoint) {
-    return $.getJSON(endpoint)
-            .then((data) => {
-              data.data.forEach((el, i) => {
-                this.posts.push(el);
-              });
+    return new Promise((resolve, reject) => {
+      const req = new XMLHttpRequest();
+      req.open('GET', endpoint);
+      req.onload = () => {
+        console.log(req.status);
+        if (req.status === 200) {
+          resolve(req.response);
+        }
+        else {
+          reject(Error(req.statusText));
+        }
+      };
+      req.onerror = () => {
+        reject(Error("Network Error"));
+      };
+      req.send();
+    }).then((res) => {
+      const data = JSON.parse(res);
+      data.data.forEach((el, i) => {
+        this.posts.push(el);
+      });
 
-              if (data.pagination.next_url) {
-                this.getPosts(`${data.pagination.next_url}&callback=?`);
-              }
-            }).then(() => {
-              this.setState({posts: this.posts});
-            });
+      if (data.pagination.next_url) {
+        this.getPosts(`${data.pagination.next_url}&callback=?`);
+      }
+    }).then(() => {
+      this.setState({posts: this.posts});
+    });
   }
 
   buildMarkers() {
